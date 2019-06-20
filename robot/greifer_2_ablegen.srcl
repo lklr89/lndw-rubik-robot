@@ -1,0 +1,543 @@
+KOM -------------------------------------------------------------------
+KOM --------------------- WEIZENBIER-PROGRAMM -------------------------
+KOM -------------------------------------------------------------------
+KOM Julia Diel
+KOM Robotertechnik
+KOM -------------------------------------------------------------------
+
+DEF HP greifer_ablegen
+
+KOM --- Geschwindigkeit und Ueberschleifen ---
+GES ALL 100
+GES FUE BAN 90
+WZK 1
+KOM BES BAN 20
+KOM BES ALL 50
+KOM UES BAN 0
+KOM UES PTP 0
+
+PTP X 215.8 Y 306.6 Z 550 A 27 B 178.9 C 80.0
+WRT Z 1 ZS
+
+KOM Fahre rein
+LIN X 225.6 Y 511.7 Z 500 A 27 B 178.9 C 80
+WRT Z 1 ZS
+
+KOM Fahre runter
+GES FUE BAN 10
+LIN X 225.6 Y 511.7 Z 477 A 27 B 178.9 C 80
+WRT Z 2 ZS
+LIN X 225.6 Y 511.7 Z 447.1 A 27 B 178.9 C 80
+WRT Z 2 ZS
+
+SPG UP greifer_entriegeln 1
+WRT Z 1 S
+
+KOM - fahre hoch : z+
+LIN X 225.6 Y 511.7 Z 477 A 27 B 178.9 C 80
+WRT Z 1 ZS
+
+KOM Fahre raus
+GES FUE BAN 90
+LIN X 225.6 Y 310.6 Z 477 A 27 B 178.9 C 80.0
+WRT Z 1 ZS
+
+END HP greifer_ablegen
+
+
+KOM -------------------------------------------------------------------
+KOM ----------------------UNTERPROGRAMME-------------------------------
+KOM -------------------------------------------------------------------
+
+KOM --------------- UNTERPROGRAMME: Weizenbier ------------------------
+
+KOM TODO HOME POSITION ACHSE 1 drehen und dann pos_start
+
+KOM -------------------------------------------------------------------
+
+KOM Start Position
+DEF UP pos_start A
+
+	LIN X 348.1 Y -109.4 Z 284.5 A 56.7 B 90.5 C 142.5
+
+END UP pos_start A
+
+KOM ----------------------------------------------------------------
+
+KOM Start Position
+DEF UP pos_start_zPlus A
+
+	PTP X 348.1 Y -109.4 Z 352.6 A 56.7 B 90.5 C 142.5
+
+END UP pos_start_zPlus A
+
+KOM ----------------------------------------------------------------
+
+KOM Bier Position anfahren
+DEF UP pos_bier_greifen A
+
+	PTP X 448.1 Y 21.9 Z 284.5 A 57.7 B 90.5 C 142.5
+
+END UP pos_bier_greifen A
+
+KOM ----------------------------------------------------------------
+
+KOM Bier Position (pos_bier_greifen) erhöht um Z-Achse, um Bierflasche aus Halterung zu holen
+DEF UP pos_bier_heben A
+
+	LIN X 448.1 Y 21.9 Z 352.6 A 57.7 B 90.5 C 142.5
+
+END UP pos_bier_heben A
+
+KOM ----------------------------------------------------------------
+
+KOM Bier Position (pos_bier_heben) erhöht um Z-Achse, um Bierflasche abzustellen
+DEF UP pos_bier_abstellen A
+
+	LIN X 450.1 Y 22.9 Z 289.0 A 57.7 B 90.5 C 142.5
+
+END UP pos_bier_abstellen A
+
+KOM ----------------------------------------------------------------
+
+KOM Weizenbierflasche wenden
+DEF UP pos_bier_wenden A
+
+	PTP X 565.0 Y -79.5 Z 402.6 A 7.5 B 91.5 C 142.7
+
+END UP pos_bier_wenden A
+
+KOM ----------------------------------------------------------------
+
+KOM Glas anfahren mit Weizenbierflasche
+DEF UP pos_glas_anfahren A
+
+	LIN X 565.0 Y -10.5 Z 402.6 A 7.5 B 91.5 C 142.7
+
+END UP pos_glas_anfahren A
+
+KOM ----------------------------------------------------------------
+
+KOM Weizenbier einschenken bei 45 Grad Glas Position
+DEF UP bier_einschenken_45_ A
+
+	KOM Dauer ca 15-20 Sekunden
+	GES FUE ORI C 10
+	KOM KippPhase - hier langsamer
+	GES ALL 20
+	PTP X 558.2 Y 38.7 Z 353.5 A 7.5 B 91.5 C 50.6
+	GES ALL 13
+	PTP X 558.2 Y 35.1 Z 367.1 A 7.5 B 91.5 C 43.7
+	KOM Bier gerade ausrichten
+	GES ALL 50
+	PTP X 565.0 Y -4.5 Z 402.6 A 7.5 B 91.5 C 142.7
+	GES FUE ORI C 100
+	GES ALL 100
+
+END UP bier_einschenken_45_ A
+
+KOM Weizenbier einschenken bei 45 Grad Glas Position
+DEF UP bier_einschenken_45 A
+
+	GES FUE ORI C 10
+	KOM KippPhase - hier langsamer
+	GES ALL 30
+	PTP X 558.2 Y 38.7 Z 353.5 A 7.5 B 91.5 C 70.6
+	GES ALL 15
+	PTP X 558.2 Y 38.7 Z 353.5 A 7.5 B 91.5 C 55.6
+	GES ALL 13
+	PTP X 558.2 Y 35.1 Z 367.1 A 7.5 B 91.5 C 46.7
+	KOM Bier gerade ausrichten
+	GES ALL 50
+	PTP X 565.0 Y -4.5 Z 402.6 A 7.5 B 91.5 C 142.7
+	GES FUE ORI C 100
+	GES ALL 100
+
+END UP bier_einschenken_45 A
+
+KOM ----------------------------------------------------------------
+
+KOM ----------------------------------------------------------------
+
+KOM Glas auf 90 Grad in die Vertikale kippen
+DEF UP glas_kippen A
+
+	KOM Achser umstellen
+	PTP X 574.7 Y 1.5 Z 364.6 A 38.9 B 86.8 C 141.5
+	GES FUE BAN 30
+	GES ALL 15
+	LIN X 574.7 Y 77.5 Z 364.6 A 38.9 B 86.8 C 141.5
+	PTP X 574.7 Y 122.0 Z 408.0 A 38.9 B 86.8 C 141.5
+	LIN X 574.7 Y 130.0 Z 408.0 A 38.9 B 86.8 C 141.5
+	GES FUE BAN 80
+	GES ALL 100
+
+END UP glas_kippen A
+
+KOM ----------------------------------------------------------------
+
+
+KOM Rest vom Weizenbier in Flasche schuetteln
+DEF UP bier_shake_0 A
+
+	UES BAN 1
+	UES PTP 1
+	PTP X 565.0 Y -70.5 Z 422.6 A 7.5 B 91.5 C 122.7
+	PTP X 565.0 Y -30.5 Z 402.6 A 7.5 B 91.5 C 162.7
+	UES BAN 0
+	UES PTP 0
+
+END UP bier_shake_0 A
+
+
+DEF UP bier_shake_1 A
+
+	UES BAN 1
+	UES PTP 1
+	PTP X 565.0 Y 9.5 Z 402.6 A 7.5 B 91.5 C 113.7
+	PTP X 553.0 Y 7.5 Z 442.6 A 7.5 B 81.5 C 113.7
+	UES BAN 0
+	UES PTP 0
+
+END UP bier_shake_1 A
+
+DEF UP bier_shake_2 A
+
+	UES BAN 1
+	UES PTP 1
+	PTP X 565.0 Y -29.5 Z 394.6 A 7.5 B 91.5 C 170.7
+	PTP X 555.0 Y -29.5 Z 434.6 A 7.5 B 78.9 C 170.7
+	UES BAN 0
+	UES PTP 0
+
+
+END UP bier_shake_2 A
+
+KOM ----------------------------------------------------------------
+
+KOM ----------------------------------------------------------------
+
+KOM Weizenbier-Schaum einschenken bei 90 Grad Glas Position
+DEF UP schaum_einschenken_90_ A
+
+	PTP X 611.2 Y 135.6 Z 516.7 A 20.3 B 90.3 C 143.0
+	KOM GES FUE ORI C 20
+	KOM GES ALL 20
+
+	PTP X 587.3 Y 160.6 Z 471.0 A 20.3 B 90.3 C 40.1
+	GES FUE BAN 10
+	LIN X 587.3 Y 186.6 Z 471.0 A 20.3 B 90.3 C 28.1
+	LIN X 587.3 Y 203.6 Z 520.0 A 20.3 B 90.3 C 10.1
+	GES FUE BAN 50
+	KOM GES FUE ORI C 100
+	PTP X 611.2 Y 135.6 Z 516.7 A 20.3 B 90.3 C 143.0
+	KOM GES ALL 100
+
+END UP schaum_einschenken_90_ A
+
+KOM ----------------------------------------------------------------
+
+KOM Weizenbier-Schaum einschenken bei 90 Grad Glas Position
+DEF UP schaum_einschenken_90 A
+
+	PTP X 611.2 Y 135.6 Z 516.7 A 20.3 B 90.3 C 143.0
+	KOM GES FUE ORI C 20
+	KOM GES ALL 20
+
+	PTP X 587.3 Y 160.6 Z 471.0 A 20.3 B 90.3 C 40.1
+	GES FUE BAN 10
+	LIN X 587.3 Y 186.6 Z 471.0 A 20.3 B 90.3 C 28.1
+	LIN X 587.3 Y 203.6 Z 515.0 A 20.3 B 90.3 C 10.1
+	KOM TODO Shake
+	GES FUE BAN 50
+	LIN X 587.3 Y 203.6 Z 535.0 A 20.3 B 90.3 C 10.1
+	LIN X 587.3 Y 203.6 Z 520.0 A 20.3 B 90.3 C 10.1
+	LIN X 587.3 Y 203.6 Z 535.0 A 20.3 B 90.3 C 10.1
+	LIN X 587.3 Y 203.6 Z 520.0 A 20.3 B 90.3 C 10.1
+	GES FUE BAN 50
+	KOM GES FUE ORI C 100
+	PTP X 611.2 Y 135.6 Z 516.7 A 20.3 B 90.3 C 143.0
+	KOM GES ALL 100
+
+END UP schaum_einschenken_90 A
+
+KOM ----------------------------------------------------------------
+
+KOM ----------------------------------------------------------------
+
+KOM Weizenbier einschenken bei 90 Grad Glas Position
+DEF UP bier_einschenken_90_ A
+
+	PTP X 601.8 Y 134.2 Z 481.6 A 20.3 B 90.3 C 143.0
+	KOM GES FUE ORI C 20
+	GES ALL 20
+		GES FUE BAN 10
+		PTP X 585.3 Y 177.6 Z 441.8 A 20.3 B 90.3 C 41.1
+		PTP X 585.3 Y 177.6 Z 444.8 A 20.3 B 90.3 C 38.1
+		GES FUE BAN 50
+	KOM GES FUE ORI C 100
+		PTP X 601.8 Y 134.2 Z 481.6 A 20.3 B 90.3 C 143.0
+	GES ALL 100
+
+END UP bier_einschenken_90_ A
+
+KOM Weizenbier einschenken bei 90 Grad Glas Position
+DEF UP bier_einschenken_90 A
+
+	PTP X 611.8 Y 124.2 Z 481.6 A 20.3 B 90.3 C 143.0
+	KOM GES FUE ORI C 20
+	GES ALL 30
+		GES FUE BAN 30
+		PTP X 595.3 Y 167.6 Z 441.8 A 20.3 B 90.3 C 60.1
+		GES ALL 10
+		KOM GES FUE BAN 8
+		PTP X 595.3 Y 167.6 Z 444.8 A 20.3 B 90.3 C 44.1
+		KOM PTP X 595.3 Y 167.6 Z 444.8 A 20.3 B 90.3 C 38.1
+		GES ALL 40
+		GES FUE BAN 50
+	KOM GES FUE ORI C 100
+		PTP X 611.8 Y 124.2 Z 481.6 A 20.3 B 90.3 C 143.0
+	GES ALL 100
+
+END UP bier_einschenken_90 A
+
+KOM ----------------------------------------------------------------
+KOM - Ausgänge auf greifer entriegelt
+DEF UP reset A
+
+	RS A09
+	RS A10
+	RS A11
+	RS A12
+	RS A13
+	RS A14
+	RS A15
+	RS A16
+	RS A17
+	RS A18
+	RS A19
+	RS A20
+	RS A21
+	S  A22
+
+END UP reset A
+
+KOM -------------------------------------------------------------------
+
+DEF UP reset_ A
+
+	RS A09
+	RS A10
+	RS A11
+	RS A12
+	RS A13
+	RS A14
+	RS A15
+	RS A16
+
+END UP reset_ A
+
+KOM -------------------------------------------------------------------
+
+KOM ----------------------------------------------------------------
+KOM --------------- UNTERPROGRAMME: GREIFER ------------------------
+KOM ----------------------------------------------------------------
+
+KOM CUBE-Greifer ablegen und BIER-Greifer nehmen
+DEF UP greifer_wechseln_cube_zu_bier A
+KOM --- Geschwindigkeit und Ueberschleifen ---
+	GES ALL 100
+	GES FUE BAN 80
+	KOM BES BAN 20
+	KOM BES ALL 50
+	UES BAN 0
+	UES PTP 0
+
+	KOM TODO Cube Position
+	LIN X 221.8 Y 150.2 Z 462.0 A -167.3 B 179.3 C -115.5
+
+	KOM ------- CUBE Greifer ablegen -------
+	LIN X 221.8 Y 510.2 Z 462.0 A -167.3 B 179.3 C -115.5
+	GES FUE BAN 12
+	LIN X 221.8 Y 510.2 Z 456.0 A -167.3 B 179.3 C -115.5
+	SPG UP greifer_entriegeln 1
+	GES FUE BAN 80
+	PTP X 221.8 Y 510.2 Z 456.0 A -167.3 B 183.0 C -115.5
+	PTP X 221.8 Y 510.2 Z 456.0 A -167.3 B 178.0 C -115.5
+	PTP X 221.8 Y 510.2 Z 456.0 A -167.3 B 183.0 C -115.5
+	PTP X 221.8 Y 510.2 Z 456.0 A -167.3 B 178.0 C -115.5
+	PTP X 221.8 Y 510.2 Z 456.0 A -167.3 B 183.0 C -115.5
+	PTP X 221.8 Y 510.2 Z 456.0 A -167.3 B 178.0 C -115.5
+
+	GES FUE BAN 20
+	LIN X 221.8 Y 510.2 Z 482.0 A -167.3 B 179.3 C -115.5
+	GES FUE BAN 50
+	KOM rueber zu bier greifer
+	LIN X 373.0 Y 512.7 Z 482.0 A -167.3 B 179.3 C -115.5
+	GES FUE BAN 8
+	LIN X 373.0 Y 514.0 Z 448.5 A -167.3 B 179.3 C -115.5
+	SPG UP greifer_verriegeln 1
+	GES FUE BAN 50
+	LIN X 373.0 Y 514.0 Z 462.0 A -167.3 B 179.3 C -115.5
+	LIN X 373.0 Y 410.0 Z 462.0 A -167.3 B 179.3 C -115.5
+	GES FUE BAN 80
+	LIN X 373.0 Y -270.0 Z 462.0 A -167.3 B 179.3 C -115.5
+
+	S A13
+
+END UP greifer_wechseln_cube_zu_bier A
+
+KOM ----------------------------------------------------------------
+
+KOM BIER-Greifer ablegen und CUBE_Greifer nehmen
+DEF UP greifer_wechseln_bier_zu_cube A
+	GES ALL 100
+	GES FUE BAN 80
+	KOM BES BAN 20
+	KOM BES ALL 50
+	UES BAN 0
+	UES PTP 0
+
+	KOM bier_pos_0
+	SPG UP pos_start_zPlus 1
+	KOM PTP X 439.8 Y -70.9 Z 367.9 A 91.9 B 93 C 142.7
+
+	KOM --- mit CUBE Greifer fahren , ablegen , Bier Greifer nehmen
+
+	KOM hoch fahren
+	KOM LIN X 439.8 Y -70.9 Z 610.0 A 56.7 B 90.5 C 142.5
+	LIN X 373.0 Y -270.0 Z 462.0 A -167.3 B 179.3 C -115.5
+
+
+	KOM rüber zum Greifersystem fahren
+	KOM ------- BIER Greifer ablegen -------
+	KOM Bier Greifer anfahren
+	KOM GES FUE BAN 50
+	KOM LIN X 389.6 Y 179.3 Z 614.4 A 90.2 B 90.5 C 142.5
+
+	LIN X 373.0 Y 410.0 Z 462.0 A -167.3 B 179.3 C -115.5
+	KOM rein fahren
+	LIN X 373.0 Y 512.7 Z 462.0 A -167.3 B 179.3 C -115.5
+	GES FUE BAN 50
+	LIN X 373.0 Y 512.7 Z 448.5 A -167.3 B 179.3 C -115.5
+	SPG UP greifer_entriegeln 1
+
+	LIN X 373.0 Y 512.7 Z 500.0 A -167.3 B 179.3 C -115.5
+
+	KOM rüber zu cube
+	LIN X 221.8 Y 510.2 Z 500.0 A -167.3 B 179.3 C -115.5
+	KOM runter
+	GES FUE BAN 8
+	LIN X 221.8 Y 510.2 Z 447.6 A -167.3 B 179.3 C -115.5
+	SPG UP greifer_verriegeln 1
+	GES FUE BAN 50
+	LIN X 221.8 Y 510.2 Z 462.0 A -167.3 B 179.3 C -115.5
+	GES FUE BAN 80
+	LIN X 221.8 Y 150.2 Z 462.0 A -167.3 B 179.3 C -115.5
+
+	KOM TODO Start Position vom Cube
+	S A14
+
+END UP greifer_wechseln_bier_zu_cube A
+
+DEF UP greifer_wechseln_bier_zu_cube_ A
+	GES ALL 100
+	GES FUE BAN 80
+	KOM BES BAN 20
+	KOM BES ALL 50
+	UES BAN 0
+	UES PTP 0
+
+	KOM bier_pos_0
+	SPG UP pos_start_zPlus 1
+	KOM PTP X 439.8 Y -70.9 Z 367.9 A 91.9 B 93 C 142.7
+
+	KOM --- mit CUBE Greifer fahren , ablegen , Bier Greifer nehmen
+
+	KOM hoch fahren
+	KOM LIN X 439.8 Y -70.9 Z 610.0 A 56.7 B 90.5 C 142.5
+	LIN X 373.0 Y -270.0 Z 462.0 A -167.3 B 179.3 C -115.5
+
+
+	KOM rüber zum Greifersystem fahren
+	KOM ------- BIER Greifer ablegen -------
+	KOM Bier Greifer anfahren
+	KOM GES FUE BAN 50
+	KOM LIN X 389.6 Y 179.3 Z 614.4 A 90.2 B 90.5 C 142.5
+
+	LIN X 373.0 Y 410.0 Z 462.0 A -167.3 B 179.3 C -115.5
+	KOM rein fahren
+	LIN X 373.0 Y 512.7 Z 462.0 A -167.3 B 179.3 C -115.5
+	GES FUE BAN 50
+	LIN X 373.0 Y 512.7 Z 448.5 A -167.3 B 179.3 C -115.5
+	SPG UP greifer_entriegeln 1
+
+	LIN X 373.0 Y 512.7 Z 500.0 A -167.3 B 179.3 C -115.5
+
+	KOM rüber zu cube
+	LIN X 221.8 Y 510.2 Z 500.0 A -167.3 B 179.3 C -115.5
+	KOM runter
+	GES FUE BAN 8
+	LIN X 221.8 Y 510.2 Z 447.6 A -167.3 B 179.3 C -115.5
+	SPG UP greifer_verriegeln 1
+	GES FUE BAN 50
+	LIN X 221.8 Y 510.2 Z 462.0 A -167.3 B 179.3 C -115.5
+	GES FUE BAN 80
+	LIN X 221.8 Y 150.2 Z 462.0 A -167.3 B 179.3 C -115.5
+
+END UP greifer_wechseln_bier_zu_cube_ A
+KOM ----------------------------------------------------------------
+
+KOM Unterprogramm Greifer schliessen
+DEF UP greifer_zu A
+
+	GRF 2 ZU
+	RS A17
+	RS A18
+	RS A19
+	S A20
+
+END UP greifer_zu A
+
+KOM ----------------------------------------------------------------
+
+KOM Unterprogramm Greifer oeffnen
+DEF UP greifer_auf A
+
+	GRF 2 ZU
+	RS A17
+	RS A18
+	RS A20
+	S A19
+
+END UP greifer_auf A
+
+KOM ----------------------------------------------------------------
+
+KOM Greifer entriegeln
+DEF UP greifer_entriegeln A
+
+	GRF 2 ZU
+	RS A17
+	RS A18
+	RS A19
+	RS A20
+	RS A21
+	S  A22
+
+END UP greifer_entriegeln A
+
+KOM ----------------------------------------------------------------
+
+KOM Greifer verriegeln
+DEF UP greifer_verriegeln A
+
+	GRF 2 ZU
+	RS A17
+	RS A18
+	RS A19
+	RS A20
+	RS A22
+	S  A21
+
+END UP greifer_verriegeln A

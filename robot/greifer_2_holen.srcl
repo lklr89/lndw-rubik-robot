@@ -1,0 +1,162 @@
+KOM -------------------------------------------------------------------
+KOM --------------------- WEIZENBIER-PROGRAMM -------------------------
+KOM -------------------------------------------------------------------
+KOM Julia Diel
+KOM Robotertechnik
+KOM -------------------------------------------------------------------
+
+DEF HP greifer_holen
+
+KOM --- Geschwindigkeit und Ueberschleifen ---
+GES ALL 100
+GES FUE BAN 90
+
+KOM BES BAN 20
+KOM BES ALL 50
+KOM UES BAN 0
+KOM UES PTP 0
+
+PTP X 215.8 Y 306.6 Z 550 A 27 B 178.9 C 80.0
+WRT Z 1 ZS
+
+KOM Fahre rein
+LIN X 225.6 Y 511.7 Z 500 A 27 B 178.9 C 80
+WRT Z 1 ZS
+
+KOM Fahre runter
+GES FUE BAN 10
+LIN X 225.6 Y 511.7 Z 477 A 27 B 178.9 C 80
+WRT Z 2 ZS
+LIN X 225.6 Y 511.7 Z 447.1 A 27 B 178.9 C 80
+WRT Z 2 ZS
+
+SPG UP greifer_verriegeln 1
+WRT Z 1 S
+
+KOM - fahre hoch : z+
+LIN X 225.6 Y 511.7 Z 477 A 27 B 178.9 C 80
+WRT Z 1 ZS
+
+KOM Fahre raus
+GES FUE BAN 90
+LIN X 225.6 Y 310.6 Z 477 A 27 B 178.9 C 80.0
+WRT Z 1 ZS
+
+
+END HP greifer_holen
+
+
+KOM -------------------------------------------------------------------
+KOM ----------------------UNTERPROGRAMME-------------------------------
+KOM -------------------------------------------------------------------
+
+KOM --------------- UNTERPROGRAMME: Weizenbier ------------------------
+
+KOM TODO HOME POSITION ACHSE 1 drehen und dann pos_start
+
+KOM -------------------------------------------------------------------
+
+KOM Start Position
+DEF UP pos_start A
+
+	LIN X 348.1 Y -109.4 Z 284.5 A 56.7 B 90.5 C 142.5
+
+END UP pos_start A
+
+KOM ----------------------------------------------------------------
+
+KOM ----------------------------------------------------------------
+KOM - Ausgänge auf greifer entriegelt
+DEF UP reset A
+
+	RS A09
+	RS A10
+	RS A11
+	RS A12
+	RS A13
+	RS A14
+	RS A15
+	RS A16
+	RS A17
+	RS A18
+	RS A19
+	RS A20
+	RS A21
+	S  A22
+
+END UP reset A
+
+KOM -------------------------------------------------------------------
+
+DEF UP reset_ A
+
+	RS A09
+	RS A10
+	RS A11
+	RS A12
+	RS A13
+	RS A14
+	RS A15
+	RS A16
+
+END UP reset_ A
+
+KOM -------------------------------------------------------------------
+
+KOM ----------------------------------------------------------------
+KOM --------------- UNTERPROGRAMME: GREIFER ------------------------
+KOM ----------------------------------------------------------------
+
+KOM Unterprogramm Greifer schliessen
+DEF UP greifer_zu A
+
+	GRF 2 ZU
+	RS A17
+	RS A18
+	RS A19
+	S A20
+
+END UP greifer_zu A
+
+KOM ----------------------------------------------------------------
+
+KOM Unterprogramm Greifer oeffnen
+DEF UP greifer_auf A
+
+	GRF 2 ZU
+	RS A17
+	RS A18
+	RS A20
+	S A19
+
+END UP greifer_auf A
+
+KOM ----------------------------------------------------------------
+
+KOM Greifer entriegeln
+DEF UP greifer_entriegeln A
+
+	GRF 2 ZU
+	RS A17
+	RS A18
+	RS A19
+	RS A20
+	RS A21
+	S  A22
+
+END UP greifer_entriegeln A
+
+KOM ----------------------------------------------------------------
+
+KOM Greifer verriegeln
+DEF UP greifer_verriegeln A
+
+	GRF 2 ZU
+	RS A17
+	RS A18
+	RS A19
+	RS A20
+	RS A22
+	S  A21
+
+END UP greifer_verriegeln A

@@ -1,0 +1,467 @@
+KOM -----------------------------------------------
+KOM Absolute robot positions (home,f2t etc.)
+
+KOM Home ,Safe & Scanning points
+DFN safe_pos_axis PTP # A1 -30 A2 16 A3 100 A4 -133 A5 -28 A6 78
+DFN safe_pos PTP X 400 Y -200 Z 600 A 0 B 135 C -37
+
+DFN home_pos PTP X 400 Y -200 Z 550 A 0 B 180 C -37
+DFN home_pos_rot PTP X 400 Y -200 Z 550 A -90 B 180 C -37
+
+DFN scan_pos LIN X 400 Y -392 Z 497 A 0 B 180 C -37
+DFN scan_cw LIN X 400 Y -392 Z 497 A -90 B 180 C -37
+DFN scan_ccw LIN X 400 Y -392 Z 497 A 90 B 180 C -37
+
+KOM Vertical turning points
+DFN vert_brake LIN X 400 Y -200 Z 450 A 0 B 180 C -37
+DFN vert_brake_cw LIN X 400 Y -200 Z 450 A -90 B 180 C -37
+DFN vert_brake_ccw LIN X 400 Y -200 Z 450 A 90 B 180 C -37
+DFN vert_brake_180 LIN X 400 Y -200 Z 450 A -180 B 180 C -37
+
+DFN vert_turn LIN X 400 Y -200 Z 409 A 0 B 180 C -37
+DFN vert_turn_cw LIN X 400 Y -200 Z 409 A -88 B 180 C -37
+DFN vert_turn_ccw LIN X 400 Y -200 Z 409 A 88 B 180 C -37
+DFN vert_turn_180 LIN X 400 Y -200 Z 409 A -177 B 180 C -37
+
+DFN vert_grab LIN X 400 Y -200 Z 395 A 0 B 180 C -37
+DFN vert_grab_cw LIN X 400 Y -200 Z 395 A -90 B 180 C -37
+DFN vert_grab_ccw LIN X 400 Y -200 Z 395 A 90 B 180 C -37
+DFN vert_grab_180 LIN X 400 Y -200 Z 395 A -180 B 180 C -37
+
+KOM Orientation points (*_to_top)
+DFN f2t_pos_up PTP X 524 Y -200 Z 500 A 0 B 225 C -37
+DFN r2t_pos_up PTP X 399 Y -73.5 Z 500 A -90 B 135 C -37
+DFN b2t_pos_up PTP X 275 Y -200 Z 500 A 0 B 135 C -37
+DFN l2t_pos_up PTP X 400 Y -322 Z 500 A -90 B 225 C -37
+
+DFN f2t_pos_brake LIN X 524 Y -200 Z 400 A 0 B 225 C -37
+DFN r2t_pos_brake LIN X 399 Y -73.5 Z 400 A -90 B 135 C -37
+DFN b2t_pos_brake LIN X 275 Y -200 Z 400 A 0 B 135 C -37
+DFN l2t_pos_brake LIN X 400 Y -322 Z 400 A -90 B 225 C -37
+
+DFN f2t_pos_grab LIN X 524 Y -200 Z 356 A 0 B 225 C -37
+DFN r2t_pos_grab LIN X 399 Y -74 Z 356 A -90 B 135 C -37
+DFN b2t_pos_grab LIN X 275 Y -200 Z 356 A 0 B 135 C -37
+DFN l2t_pos_grab LIN X 400 Y -322 Z 356 A -90 B 225 C -37
+
+KOM Speed overrides
+
+DFN speed_low GES OV 20
+DFN speed_mid GES OV 50
+DFN speed_hi GES OV 100
+
+KOM +a -> CCW, -a -> CW bei b=180
+KOM -----------------------------------------------
+KOM Main program
+
+DEF HP main
+	KOM Setup Robot and load cube gripper tool data
+	GES FUE BAN 90
+
+	UES BAN 0
+	UES PTP 0
+	WZK 0
+
+	TXT
+	TXT +-----------------------------------------------+
+	TXT |              LNdW Rubik Robot v4              |
+	TXT |   (c)2019 J. Heckel / A.Bienert / L. Keller   |
+	TXT |     Beuth Hochschule fuer Technik Berlin      |
+	TXT +-----------------------------------------------+
+	TXT
+	TXT
+	TXT Initializing...
+
+	speed_hi
+	SPG UP open_grip
+	safe_pos_axis
+	speed_mid
+	safe_pos
+	home_pos
+
+	kom Sprungadresse definieren
+	DEF AD01
+	kom Startposition
+    home_pos
+		TXT Waiting for Communication...
+	  SPG UP signal
+		WRT Z 1 S
+
+	kom TXT Test for 0001 turn right
+		U E9
+		U NE10
+		U NE11
+		U NE12
+		U E13
+		baw W
+		SPG AD rot_right
+
+	kom 26 turn left
+		U NE9
+		U E10
+		U NE11
+		U NE12
+		U E13
+		baw W
+		SPG AD rot_left
+
+	kom 27 turn 180
+		U E9
+		U E10
+		U NE11
+		U NE12
+		U E13
+		baw W
+		spg AD rot_180
+
+	kom 28 right to top
+		U NE9
+		U NE10
+		U E11
+		U NE12
+		U E13
+		baw W
+		spg UP right_to_top
+		BAW W
+		SPG AD01
+		KOM continue with next iteration of main loop
+
+	kom E29 left to top
+		U E9
+		U NE10
+		U E11
+		U NE12
+		U E13
+		baw W
+		spg UP left_to_top
+		BAW W
+		SPG AD01
+
+	kom E30 front to top
+		U NE9
+		U E10
+		U E11
+		U NE12
+		U E13
+		baw W
+		spg UP front_to_top
+		BAW W
+		SPG AD01
+
+	kom E32 back_to_top
+		U E9
+		U E10
+		U E11
+		U NE12
+		U E13
+		baw W
+		spg UP back_to_top
+		BAW W
+		SPG AD01
+
+	kom Start SCAN
+		U E9
+		U E10
+		U NE11
+		U E12
+		U E13
+		baw W
+    SPG UP scan_cube
+
+	kom Sprung zurueck auf Anfang
+		SPG AD01
+
+KOM ----------------------------------------------------------------------------
+KOM Layer rotations
+
+	DEF AD rot_left
+		SPG UP wait
+		TXT Rotating 90° CCW
+		SPG UP pinch_cube
+		vert_turn_ccw
+		SPG UP open_grip
+		vert_brake_ccw
+		speed_mid
+		home_pos
+		SPG AD01
+
+	DEF AD rot_right
+		SPG UP wait
+		TXT Rotating 90° CW
+		SPG UP pinch_cube
+		vert_turn_cw
+		SPG UP open_grip
+		vert_brake_cw
+		speed_mid
+		home_pos
+		SPG AD01
+
+	DEF AD rot_180
+		SPG UP wait
+		TXT Rotating 180°
+		SPG UP pinch_cube
+		vert_turn_cw
+		vert_turn_180
+		SPG UP open_grip
+		vert_brake_180
+		speed_mid
+		home_pos
+		SPG AD01
+
+	DEF AD scan_cube
+
+	SPG AD01
+
+END HP main
+
+kom -----------------------------------------------
+KOM Orientation manipulation subroutines
+
+KOM WARN: Usage of *_to_top subroutines from positions
+KOM 			other than home_pos MAY shred cubes and/or other stuff!
+KOM				(And probably will. Use with Caution.)
+DEF UP back_to_top A
+	TXT BACK->TOP
+	SPG UP wait
+	home_pos
+	b2t_pos_up
+	b2t_pos_brake
+	speed_low
+	b2t_pos_grab
+	SPG UP close_grip
+	b2t_pos_brake
+	speed_mid
+	home_pos
+	f2t_pos_up
+	f2t_pos_brake
+	speed_low
+	f2t_pos_grab
+	SPG UP open_grip
+	f2t_pos_brake
+	speed_mid
+	home_pos
+END UP back_to_top A
+
+DEF UP front_to_top A
+	TXT FRONT->TOP
+	SPG UP wait
+	home_pos
+	f2t_pos_up
+	f2t_pos_brake
+	speed_low
+	f2t_pos_grab
+	SPG UP close_grip
+	f2t_pos_brake
+	speed_mid
+	home_pos
+	b2t_pos_up
+	b2t_pos_brake
+	speed_low
+	b2t_pos_grab
+	SPG UP open_grip
+	b2t_pos_brake
+	speed_mid
+	home_pos
+END UP front_to_top A
+
+DEF UP left_to_top A
+	TXT LEFT->TOP
+	SPG UP wait
+	home_pos
+	l2t_pos_up
+	l2t_pos_brake
+	speed_low
+	l2t_pos_grab
+	SPG UP close_grip
+	l2t_pos_brake
+	speed_mid
+	home_pos
+	r2t_pos_up
+	r2t_pos_brake
+	speed_low
+	r2t_pos_grab
+	SPG UP open_grip
+	r2t_pos_brake
+	speed_mid
+	home_pos
+END UP left_to_top A
+
+DEF UP right_to_top A
+	TXT RIGHT->TOP
+	SPG UP wait
+	home_pos
+	r2t_pos_up
+	r2t_pos_brake
+	speed_low
+	r2t_pos_grab
+	SPG UP close_grip
+	r2t_pos_brake
+	speed_mid
+	home_pos
+	l2t_pos_up
+	l2t_pos_brake
+	speed_low
+	l2t_pos_grab
+	SPG UP open_grip
+	l2t_pos_brake
+	speed_mid
+	home_pos
+END UP right_to_top A
+
+KOM ------------------------------------------------
+KOM Communication & Cube handling subroutines
+
+DEF UP signal A
+	RS A29
+	WRT E13 H
+END UP signal A
+
+DEF UP wait A
+	S A29
+	WRT E13 L
+END UP wait A
+
+DEF UP close_grip A
+	WRT Z 1 S
+	GRF 2 ZU
+	RS A19
+	S A20
+	WRT Z 1 S
+END UP close_grip A
+
+DEF UP open_grip A
+	WRT Z 1 S
+	GRF 2 ZU
+	RS A20
+	S A19
+	WRT Z 1 S
+END UP open_grip A
+
+DEF UP drop_cube A
+TXT ERROR #WTF : K-Modus nicht vorhanden.
+HLT UN
+  KOM NUR IN home_pos ODER *2t_pos AUFRUFEN!
+  TXT Dropping Cube.
+	KOM KOM move
+	speed_low
+  KOM KOM grab
+  SPG UP open_grip
+  WRT Z 1 S
+  KOM KOM grab_r
+	speed_mid
+	KOM move_r
+  WRT Z 1 S
+END UP drop_cube A
+
+DEF UP lift_cube A
+	KOM NUR IN home_pos AUFRUFEN!
+  TXT Lifting Cube.
+	vert_brake
+	speed_low
+	vert_grab
+	SPG UP close_grip
+  WRT Z 1 S
+	vert_brake
+	speed_mid
+	WRT Z 1 S
+END UP lift_cube A
+
+DEF UP pinch_cube A
+	KOM NUR IN home_pos AUFRUFEN!
+  TXT Grabbing Top Layer.
+	vert_brake
+	speed_low
+	vert_turn
+	SPG UP close_grip
+	speed_mid
+  WRT Z 1 S
+END UP pinch_cube A
+
+DEF UP release_cube A
+TXT ERROR #WTF : K-Modus nicht vorhanden.
+HLT UN
+	KOM NUR IN home_pos AUFRUFEN!
+  TXT Releasing Cube.
+  SPG UP open_grip
+  WRT Z 1 S
+	speed_low
+	KOM turn_r
+	speed_mid
+	KOM move_r
+  WRT Z 1 S
+END UP release_cube A
+
+KOM ----------------------------------------------------------
+KOM Cube scanning subroutine
+
+DEF UP scan_cube A
+	SPG UP wait
+	TXT Scanning Cube...
+	KOM HLT UN
+	home_pos
+	SPG UP lift_cube
+
+	TXT Scanning FRONT side
+	scan_cw
+	SPG UP signal
+	SPG UP wait
+
+	TXT Scanning BACK side
+	scan_pos
+	scan_ccw
+	SPG UP signal
+	SPG UP wait
+
+	vert_brake_ccw
+	speed_low
+	vert_grab_ccw
+	SPG UP open_grip
+	vert_brake_ccw
+	speed_mid
+	home_pos
+	SPG UP lift_cube
+
+	TXT Scanning LEFT side
+	scan_cw
+	SPG UP signal
+	SPG UP wait
+
+	TXT Scanning RIGHT side
+	scan_pos
+	scan_ccw
+	SPG UP signal
+	SPG UP wait
+
+	vert_brake_ccw
+	speed_low
+	vert_grab_ccw
+	SPG UP open_grip
+	vert_brake_ccw
+	speed_mid
+	home_pos
+	SPG UP back_to_top
+	SPG UP lift_cube
+
+	TXT Scanning UP side
+	scan_cw
+	SPG UP signal
+	SPG UP wait
+
+	TXT Scanning DOWN side
+	scan_pos
+	scan_ccw
+	SPG UP signal
+	SPG UP wait
+
+	TXT Resetting cube
+	vert_brake_180
+	speed_low
+	vert_grab_180
+	SPG UP open_grip
+	vert_brake_180
+	speed_mid
+	vert_brake_ccw
+	home_pos
+	SPG UP back_to_top
+	TXT Scan Complete
+END UP scan_cube A
